@@ -40,6 +40,62 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+/* ── Cyberpunk theme ── */
+[data-theme="cyberpunk"] {
+  --color-bg-darkest: #0a0a12;
+  --color-bg-dark: #0f0f1e;
+  --color-bg-medium: #161628;
+  --color-bg-light: #1e1e36;
+  --color-bg-lighter: #2a2a48;
+
+  --color-text-primary: #e0f0ff;
+  --color-text-secondary: #8cb4d8;
+  --color-text-muted: #4a6a8a;
+
+  --color-accent: #ff2a6d;
+  --color-accent-hover: #ff5590;
+  --color-accent-muted: #b81e4e;
+
+  --color-border-subtle: #1a1a3a;
+  --color-border-default: #2a2a50;
+
+  --color-danger: #ff3355;
+  --color-danger-hover: #ff5577;
+
+  --color-success: #00e68a;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ── Japandi theme ── */
+[data-theme="japandi"] {
+  --color-bg-darkest: #161412;
+  --color-bg-dark: #1e1b18;
+  --color-bg-medium: #272320;
+  --color-bg-light: #322e28;
+  --color-bg-lighter: #3e3832;
+
+  --color-text-primary: #e8e0d6;
+  --color-text-secondary: #b0a698;
+  --color-text-muted: #706860;
+
+  --color-accent: #7a9a6e;
+  --color-accent-hover: #92b484;
+  --color-accent-muted: #5a7a4e;
+
+  --color-border-subtle: #2a2622;
+  --color-border-default: #3a3530;
+
+  --color-danger: #c45e5e;
+  --color-danger-hover: #d87a7a;
+
+  --color-success: #7a9a6e;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
 * {
   margin: 0;
   padding: 0;

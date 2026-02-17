@@ -5,6 +5,7 @@ import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { Avatar } from '../ui/Avatar';
 import { AudioSettings } from './AudioSettings';
+import { ThemeSettings } from './ThemeSettings';
 import { useUIStore } from '../../stores/uiStore';
 import { useAuthStore } from '../../stores/authStore';
 import api from '../../lib/api';
@@ -69,6 +70,12 @@ export function SettingsModal() {
             {saved ? 'Saved!' : saving ? 'Saving...' : 'Save'}
           </Button>
         </div>
+
+        {/* Divider */}
+        <div className="h-px bg-border-subtle" />
+
+        {/* Theme settings */}
+        <ThemeSettings />
 
         {/* Divider */}
         <div className="h-px bg-border-subtle" />

@@ -59,6 +59,36 @@ export async function getMessages(
   return { messages, hasMore };
 }
 
+export async function editMessage(id: string, authorId: string, content: string) {
+  const message = await db('messages').where('id', id).first();
+  if (!message) throw new AppError(404, 'Message not found');
+  if (message.author_id !== authorId) throw new AppError(403, 'You can only edit your own messages');
+
+  const sanitized = sanitizeHtml(content, SANITIZE_OPTIONS);
+  if (!sanitized.trim()) throw new AppError(400, 'Message cannot be empty');
+
+  const [updated] = await db('messages')
+    .where('id', id)
+    .update({ content: sanitized, edited_at: db.fn.now() })
+    .returning('*');
+
+  const author = await db('users')
+    .where('id', authorId)
+    .select('id', 'username', 'display_name', 'avatar_url')
+    .first();
+
+  return { ...updated, author };
+}
+
+export async function deleteMessage(id: string, authorId: string) {
+  const message = await db('messages').where('id', id).first();
+  if (!message) throw new AppError(404, 'Message not found');
+  if (message.author_id !== authorId) throw new AppError(403, 'You can only delete your own messages');
+
+  await db('messages').where('id', id).del();
+  return { id, channelId: message.channel_id };
+}
+
 export async function createMessage(channelId: string, authorId: string, content: string) {
   const sanitized = sanitizeHtml(content, SANITIZE_OPTIONS);
   if (!sanitized.trim()) throw new AppError(400, 'Message cannot be empty');

@@ -1,17 +1,40 @@
 import type { Socket } from 'socket.io-client';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/socket';
+import api from './api';
+import { getSocket } from './socket';
 
 type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
+function debugLog(msg: string) {
+  console.log(`[WebRTC] ${msg}`);
+  const s = getSocket();
+  if (s?.connected) s.emit('voice:debug', msg);
+}
+
 const peerConnections = new Map<string, RTCPeerConnection>();
 const remoteStreams = new Map<string, MediaStream>();
+const pendingCandidates = new Map<string, RTCIceCandidateInit[]>();
 
-const RTC_CONFIG: RTCConfiguration = {
+const FALLBACK_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
   ],
 };
+
+let cachedRtcConfig: RTCConfiguration | null = null;
+
+export async function fetchIceConfig(): Promise<RTCConfiguration> {
+  if (cachedRtcConfig) return cachedRtcConfig;
+  try {
+    const { data } = await api.get('/config/ice');
+    cachedRtcConfig = { iceServers: data.iceServers };
+    return cachedRtcConfig;
+  } catch {
+    console.warn('[WebRTC] Failed to fetch ICE config, using STUN fallback');
+    return FALLBACK_CONFIG;
+  }
+}
 
 let onRemoteStream: ((userId: string, stream: MediaStream) => void) | null = null;
 let onPeerDisconnected: ((userId: string) => void) | null = null;
@@ -28,6 +51,7 @@ export function createPeerConnection(
   userId: string,
   localStream: MediaStream,
   socket: TypedSocket,
+  rtcConfig?: RTCConfiguration,
 ): RTCPeerConnection {
   console.log(`[WebRTC] Creating peer connection to ${userId.slice(0, 8)}`);
 
@@ -38,7 +62,10 @@ export function createPeerConnection(
     existing.close();
   }
 
-  const pc = new RTCPeerConnection(RTC_CONFIG);
+  // Clear any stale buffered candidates
+  pendingCandidates.delete(userId);
+
+  const pc = new RTCPeerConnection(rtcConfig || cachedRtcConfig || FALLBACK_CONFIG);
   peerConnections.set(userId, pc);
 
   // Add local tracks
@@ -64,11 +91,15 @@ export function createPeerConnection(
   };
 
   pc.oniceconnectionstatechange = () => {
-    console.log(`[WebRTC] ICE state for ${userId.slice(0, 8)}: ${pc.iceConnectionState}`);
+    debugLog(`ICE state for ${userId.slice(0, 8)}: ${pc.iceConnectionState}`);
+  };
+
+  pc.onicegatheringstatechange = () => {
+    debugLog(`ICE gathering for ${userId.slice(0, 8)}: ${pc.iceGatheringState}`);
   };
 
   pc.onconnectionstatechange = () => {
-    console.log(`[WebRTC] Connection state for ${userId.slice(0, 8)}: ${pc.connectionState}`);
+    debugLog(`Connection state for ${userId.slice(0, 8)}: ${pc.connectionState}`);
     // Only close on 'failed' — 'disconnected' is often temporary and can recover
     if (pc.connectionState === 'failed') {
       closePeerConnection(userId);
@@ -89,6 +120,20 @@ export async function createOffer(userId: string, socket: TypedSocket) {
   socket.emit('voice:offer', { to: userId, offer: pc.localDescription! });
 }
 
+async function flushPendingCandidates(userId: string, pc: RTCPeerConnection) {
+  const queued = pendingCandidates.get(userId);
+  if (!queued || queued.length === 0) return;
+  console.log(`[WebRTC] Flushing ${queued.length} buffered ICE candidates for ${userId.slice(0, 8)}`);
+  for (const candidate of queued) {
+    try {
+      await pc.addIceCandidate(new RTCIceCandidate(candidate));
+    } catch (err) {
+      console.error(`[WebRTC] Failed to add buffered ICE candidate for ${userId.slice(0, 8)}:`, err);
+    }
+  }
+  pendingCandidates.delete(userId);
+}
+
 export async function handleOffer(
   userId: string,
   offer: RTCSessionDescriptionInit,
@@ -102,6 +147,7 @@ export async function handleOffer(
   }
 
   await pc.setRemoteDescription(new RTCSessionDescription(offer));
+  await flushPendingCandidates(userId, pc);
   const answer = await pc.createAnswer();
   await pc.setLocalDescription(answer);
   socket.emit('voice:answer', { to: userId, answer: pc.localDescription! });
@@ -113,11 +159,23 @@ export async function handleAnswer(userId: string, answer: RTCSessionDescription
   if (!pc) return;
   console.log(`[WebRTC] Received answer from ${userId.slice(0, 8)}`);
   await pc.setRemoteDescription(new RTCSessionDescription(answer));
+  await flushPendingCandidates(userId, pc);
 }
 
 export async function handleIceCandidate(userId: string, candidate: RTCIceCandidateInit) {
   const pc = peerConnections.get(userId);
   if (!pc) return;
+
+  // Buffer candidates that arrive before remoteDescription is set
+  if (!pc.remoteDescription) {
+    if (!pendingCandidates.has(userId)) {
+      pendingCandidates.set(userId, []);
+    }
+    pendingCandidates.get(userId)!.push(candidate);
+    debugLog(`Buffered ICE candidate for ${userId.slice(0, 8)} (no remote desc yet, total: ${pendingCandidates.get(userId)!.length})`);
+    return;
+  }
+
   try {
     await pc.addIceCandidate(new RTCIceCandidate(candidate));
   } catch (err) {
@@ -132,12 +190,14 @@ export function closePeerConnection(userId: string) {
     peerConnections.delete(userId);
   }
   remoteStreams.delete(userId);
+  pendingCandidates.delete(userId);
 }
 
 export function closeAllConnections() {
   peerConnections.forEach((pc) => pc.close());
   peerConnections.clear();
   remoteStreams.clear();
+  pendingCandidates.clear();
 }
 
 export function getRemoteStream(userId: string): MediaStream | undefined {

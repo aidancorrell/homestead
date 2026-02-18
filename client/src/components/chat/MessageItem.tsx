@@ -1,3 +1,4 @@
+import { Pencil, Trash2 } from 'lucide-react';
 import type { Message } from '../../types/models';
 import { Avatar } from '../ui/Avatar';
 import { MarkdownRenderer } from './MarkdownRenderer';
@@ -5,6 +6,9 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 interface MessageItemProps {
   message: Message;
   showHeader: boolean;
+  isOwnMessage: boolean;
+  onEditStart: (message: Message) => void;
+  onDelete: (message: Message) => void;
 }
 
 function formatTime(dateStr: string) {
@@ -26,12 +30,37 @@ function formatTime(dateStr: string) {
     ` ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-export function MessageItem({ message, showHeader }: MessageItemProps) {
+function ActionButtons({ message, onEditStart, onDelete }: { message: Message; onEditStart: (m: Message) => void; onDelete: (m: Message) => void }) {
+  return (
+    <div className="absolute -top-3 right-2 hidden gap-0.5 rounded border border-border-subtle bg-bg-medium p-0.5 shadow group-hover:flex">
+      <button
+        onClick={() => onEditStart(message)}
+        className="rounded p-1 text-text-muted hover:bg-bg-light hover:text-text-primary"
+        title="Edit"
+      >
+        <Pencil size={14} />
+      </button>
+      <button
+        onClick={() => onDelete(message)}
+        className="rounded p-1 text-text-muted hover:bg-bg-light hover:text-danger"
+        title="Delete"
+      >
+        <Trash2 size={14} />
+      </button>
+    </div>
+  );
+}
+
+function EditedTag() {
+  return <span className="ml-1 text-[10px] text-text-muted">(edited)</span>;
+}
+
+export function MessageItem({ message, showHeader, isOwnMessage, onEditStart, onDelete }: MessageItemProps) {
   const author = message.author;
 
   if (showHeader) {
     return (
-      <div className="mt-4 flex gap-3 first:mt-0">
+      <div className="group relative mt-4 flex gap-3 rounded px-1 py-0.5 first:mt-0 hover:bg-bg-dark/30">
         <Avatar
           name={author?.display_name || author?.username || 'Unknown'}
           src={author?.avatar_url}
@@ -46,18 +75,22 @@ export function MessageItem({ message, showHeader }: MessageItemProps) {
           </div>
           <div className="text-sm text-text-secondary">
             <MarkdownRenderer content={message.content} />
+            {message.edited_at && <EditedTag />}
           </div>
         </div>
+        {isOwnMessage && <ActionButtons message={message} onEditStart={onEditStart} onDelete={onDelete} />}
       </div>
     );
   }
 
   return (
-    <div className="group flex gap-3 py-0.5 hover:bg-bg-dark/30">
+    <div className="group relative flex gap-3 rounded px-1 py-0.5 hover:bg-bg-dark/30">
       <div className="w-10 shrink-0" />
       <div className="min-w-0 flex-1 text-sm text-text-secondary">
         <MarkdownRenderer content={message.content} />
+        {message.edited_at && <EditedTag />}
       </div>
+      {isOwnMessage && <ActionButtons message={message} onEditStart={onEditStart} onDelete={onDelete} />}
     </div>
   );
 }

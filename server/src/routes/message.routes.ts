@@ -7,3 +7,5 @@ export const messageRoutes = Router();
 messageRoutes.use(requireAuth);
 
 messageRoutes.get('/:channelId/messages', messageController.getMessages);
+messageRoutes.patch('/:channelId/messages/:id', messageController.editMessage);
+messageRoutes.delete('/:channelId/messages/:id', messageController.deleteMessage);

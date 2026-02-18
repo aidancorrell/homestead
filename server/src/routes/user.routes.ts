@@ -6,5 +6,7 @@ export const userRoutes = Router();
 
 userRoutes.use(requireAuth);
 
+userRoutes.get('/online', userController.getOnlineUsers);
 userRoutes.get('/me', userController.getProfile);
 userRoutes.patch('/me', userController.updateProfile);
+userRoutes.patch('/me/password', userController.changePassword);

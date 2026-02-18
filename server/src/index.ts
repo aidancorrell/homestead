@@ -11,6 +11,7 @@ import { serverRoutes } from './routes/server.routes.js';
 import { channelRoutes } from './routes/channel.routes.js';
 import { messageRoutes } from './routes/message.routes.js';
 import { userRoutes } from './routes/user.routes.js';
+import { configRoutes } from './routes/config.routes.js';
 import { initSocket } from './socket/index.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/servers', serverRoutes);
 app.use('/api/servers', channelRoutes);
 app.use('/api/channels', messageRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/config', configRoutes);
 
 app.use(errorHandler);
 
@@ -39,6 +41,7 @@ async function start() {
     // Run migrations
     await db.migrate.latest({
       directory: new URL('./db/migrations', import.meta.url).pathname,
+      loadExtensions: ['.js'],
     });
     console.log('Migrations complete');
 

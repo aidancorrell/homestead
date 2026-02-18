@@ -3,6 +3,8 @@ import type { Message } from './models';
 export interface ServerToClientEvents {
   'message:new': (message: Message) => void;
   'message:typing': (data: { channelId: string; userId: string; username: string }) => void;
+  'message:edit': (message: Message) => void;
+  'message:delete': (data: { id: string; channelId: string }) => void;
   'user:online': (userId: string) => void;
   'user:offline': (userId: string) => void;
   'voice:user-joined': (data: { userId: string; username: string; channelId: string }) => void;
@@ -23,6 +25,7 @@ export interface ClientToServerEvents {
   'voice:offer': (data: { to: string; offer: RTCSessionDescriptionInit }) => void;
   'voice:answer': (data: { to: string; answer: RTCSessionDescriptionInit }) => void;
   'voice:ice-candidate': (data: { to: string; candidate: RTCIceCandidateInit }) => void;
+  'voice:debug': (msg: string) => void;
 }
 
 export interface VoiceParticipant {

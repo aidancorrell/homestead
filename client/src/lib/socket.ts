@@ -19,7 +19,7 @@ export function connectSocket(): TypedSocket {
   if (socket?.connected) return socket;
 
   socket = io({
-    auth: { token: getAccessToken() },
+    auth: (cb) => cb({ token: getAccessToken() }),
     transports: ['websocket'],
     reconnectionDelay: 500,
     reconnectionDelayMax: 2000,

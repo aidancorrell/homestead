@@ -11,6 +11,9 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3001),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  TURN_URL: z.string().optional().default(''),
+  TURN_USER: z.string().optional().default(''),
+  TURN_PASSWORD: z.string().optional().default(''),
 });
 
 const parsed = envSchema.safeParse(process.env);

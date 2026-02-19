@@ -7,13 +7,13 @@ export interface AuthResponse {
 
 export interface RegisterRequest {
   username: string;
-  email: string;
   password: string;
+  invite_code: string;
   display_name?: string;
 }
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 

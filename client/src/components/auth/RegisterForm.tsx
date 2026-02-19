@@ -6,7 +6,7 @@ import { Button } from '../ui/Button';
 
 export function RegisterForm() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export function RegisterForm() {
     setError('');
     setLoading(true);
     try {
-      await register(username, email, password);
+      await register(username, password, inviteCode);
       navigate('/channels/@me');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Registration failed';
@@ -36,6 +36,14 @@ export function RegisterForm() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
+            id="invite-code"
+            label="Invite Code"
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            required
+            placeholder="Paste the invite code you received"
+          />
+          <Input
             id="username"
             label="Username"
             value={username}
@@ -43,14 +51,6 @@ export function RegisterForm() {
             required
             minLength={2}
             maxLength={32}
-          />
-          <Input
-            id="email"
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
           />
           <Input
             id="password"

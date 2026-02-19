@@ -31,9 +31,11 @@ export class ErrorBoundary extends Component<Props, State> {
           <pre style={{ whiteSpace: 'pre-wrap', fontSize: 14, color: '#ccc' }}>
             {this.state.error?.message}
           </pre>
-          <pre style={{ whiteSpace: 'pre-wrap', fontSize: 12, color: '#888', marginTop: 16 }}>
-            {this.state.error?.stack}
-          </pre>
+          {import.meta.env.DEV && (
+            <pre style={{ whiteSpace: 'pre-wrap', fontSize: 12, color: '#888', marginTop: 16 }}>
+              {this.state.error?.stack}
+            </pre>
+          )}
           <button
             onClick={() => window.location.reload()}
             style={{ marginTop: 24, padding: '8px 16px', background: '#7c5cbf', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}

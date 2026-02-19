@@ -1,14 +1,11 @@
 import type { Socket } from 'socket.io-client';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/socket';
 import api from './api';
-import { getSocket } from './socket';
 
 type TypedSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 function debugLog(msg: string) {
   console.log(`[WebRTC] ${msg}`);
-  const s = getSocket();
-  if (s?.connected) s.emit('voice:debug', msg);
 }
 
 const peerConnections = new Map<string, RTCPeerConnection>();

@@ -8,6 +8,8 @@ interface MessageState {
   typingUsers: Record<string, Map<string, { username: string; timeout: ReturnType<typeof setTimeout> }>>;
   fetchMessages: (channelId: string, before?: string) => Promise<void>;
   addMessage: (channelId: string, message: Message) => void;
+  updateMessage: (channelId: string, message: Message) => void;
+  removeMessage: (channelId: string, messageId: string) => void;
   setTyping: (channelId: string, userId: string, username: string) => void;
   clearTyping: (channelId: string, userId: string) => void;
   getTypingUsers: (channelId: string) => string[];
@@ -46,6 +48,26 @@ export const useMessageStore = create<MessageState>((set, get) => ({
     }));
     // Clear typing indicator for this user
     get().clearTyping(channelId, message.author_id);
+  },
+
+  updateMessage: (channelId, message) => {
+    set((state) => ({
+      messagesByChannel: {
+        ...state.messagesByChannel,
+        [channelId]: (state.messagesByChannel[channelId] || []).map((m) =>
+          m.id === message.id ? message : m,
+        ),
+      },
+    }));
+  },
+
+  removeMessage: (channelId, messageId) => {
+    set((state) => ({
+      messagesByChannel: {
+        ...state.messagesByChannel,
+        [channelId]: (state.messagesByChannel[channelId] || []).filter((m) => m.id !== messageId),
+      },
+    }));
   },
 
   setTyping: (channelId, userId, username) => {

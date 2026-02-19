@@ -2,7 +2,6 @@ export interface User {
   id: string;
   username: string;
   display_name: string;
-  email: string;
   avatar_url: string | null;
   status: 'online' | 'idle' | 'dnd' | 'offline';
   created_at: string;
@@ -42,5 +41,9 @@ export interface ServerMember {
   server_id: string;
   role: 'owner' | 'admin' | 'member';
   joined_at: string;
-  user?: User;
+  // Flat fields from JOIN (server returns these directly, not nested under `user`)
+  username: string;
+  display_name: string;
+  avatar_url: string | null;
+  status: 'online' | 'idle' | 'dnd' | 'offline';
 }

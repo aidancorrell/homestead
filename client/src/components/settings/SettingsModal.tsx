@@ -18,6 +18,12 @@ export function SettingsModal() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwMessage, setPwMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   if (!user) return null;
 
   async function handleSave() {
@@ -48,7 +54,7 @@ export function SettingsModal() {
             <div>
               <p className="font-semibold text-text-primary">{user.display_name}</p>
               <p className="text-sm text-text-muted">#{user.username}</p>
-              <p className="text-xs text-text-muted">{user.email}</p>
+
             </div>
           </div>
         </div>
@@ -69,6 +75,69 @@ export function SettingsModal() {
           >
             {saved ? 'Saved!' : saving ? 'Saving...' : 'Save'}
           </Button>
+        </div>
+
+        {/* Change Password */}
+        <div>
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Change Password</h3>
+          <div className="flex flex-col gap-2">
+            <Input
+              id="current-password"
+              label="Current Password"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <Input
+              id="new-password"
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <Input
+              id="confirm-password"
+              label="Confirm New Password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            {pwMessage && (
+              <p className={`text-xs ${pwMessage.type === 'error' ? 'text-danger' : 'text-status-online'}`}>
+                {pwMessage.text}
+              </p>
+            )}
+            <Button
+              onClick={async () => {
+                if (newPassword !== confirmPassword) {
+                  setPwMessage({ type: 'error', text: 'Passwords do not match' });
+                  return;
+                }
+                if (newPassword.length < 8) {
+                  setPwMessage({ type: 'error', text: 'Password must be at least 8 characters' });
+                  return;
+                }
+                setPwSaving(true);
+                setPwMessage(null);
+                try {
+                  await api.patch('/users/me/password', { currentPassword, newPassword });
+                  setPwMessage({ type: 'success', text: 'Password changed successfully' });
+                  setCurrentPassword('');
+                  setNewPassword('');
+                  setConfirmPassword('');
+                } catch (err: any) {
+                  setPwMessage({ type: 'error', text: err.response?.data?.error || 'Failed to change password' });
+                } finally {
+                  setPwSaving(false);
+                }
+              }}
+              disabled={pwSaving || !currentPassword || !newPassword || !confirmPassword}
+              size="sm"
+              className="self-end"
+            >
+              {pwSaving ? 'Changing...' : 'Change Password'}
+            </Button>
+          </div>
         </div>
 
         {/* Divider */}

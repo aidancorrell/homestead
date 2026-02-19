@@ -11,6 +11,7 @@ import {
   handleIceCandidate,
   closePeerConnection,
   closeAllConnections,
+  fetchIceConfig,
 } from './webrtc';
 import {
   initAudioEngine,
@@ -94,12 +95,15 @@ export async function joinVoiceChannel(channelId: string) {
   // Wait for participants (may have already resolved while getting mic)
   const participants = await participantsPromise;
 
+  // Fetch ICE config (TURN credentials) before creating connections
+  const rtcConfig = await fetchIceConfig();
+
   // Create peer connections to existing users (we send offers, they respond with answers)
   const otherParticipants = participants.filter(p => p.userId !== userId);
   console.log(`[Voice] Creating peer connections to ${otherParticipants.length} existing user(s)`);
   for (const participant of otherParticipants) {
     console.log(`[Voice] Connecting to ${participant.username} (${participant.userId.slice(0, 8)})`);
-    createPeerConnection(participant.userId, localStream!, socket);
+    createPeerConnection(participant.userId, localStream!, socket, rtcConfig);
     await createOffer(participant.userId, socket);
   }
 

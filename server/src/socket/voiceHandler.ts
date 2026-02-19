@@ -1,11 +1,27 @@
 import type { Server, Socket } from 'socket.io';
+import { db } from '../config/database.js';
 
 // Track voice channel participants: channelId -> Set of { userId, username, socketId }
 const voiceRooms = new Map<string, Map<string, { userId: string; username: string; socketId: string }>>();
 
+async function verifyChannelMembership(userId: string, channelId: string): Promise<boolean> {
+  const channel = await db('channels').where('id', channelId).select('server_id').first();
+  if (!channel) return false;
+  const member = await db('server_members')
+    .where({ server_id: channel.server_id, user_id: userId })
+    .first();
+  return !!member;
+}
+
 export function voiceHandler(io: Server, socket: Socket) {
-  socket.on('voice:join', (channelId: string) => {
-    console.log(`[VOICE] ${socket.data.username} joining channel ${channelId.slice(0, 8)}`);
+  socket.on('voice:join', async (channelId: string) => {
+    if (typeof channelId !== 'string' || !channelId) return;
+
+    const isMember = await verifyChannelMembership(socket.data.userId, channelId);
+    if (!isMember) {
+      socket.emit('error', { message: 'Not a member of this server' });
+      return;
+    }
 
     // Leave any existing voice channel
     leaveCurrentVoiceChannel(io, socket);
@@ -27,7 +43,6 @@ export function voiceHandler(io: Server, socket: Socket) {
 
     // Tell the new user about existing participants
     const participants = Array.from(room.values()).map(({ userId, username }) => ({ userId, username }));
-    console.log(`[VOICE] Sending participants to ${socket.data.username}:`, participants.map(p => p.username));
     socket.emit('voice:participants', { channelId, participants });
 
     // Tell existing participants about the new user
@@ -39,34 +54,12 @@ export function voiceHandler(io: Server, socket: Socket) {
   });
 
   socket.on('voice:leave', () => {
-    console.log(`[VOICE] ${socket.data.username} leaving voice channel`);
     leaveCurrentVoiceChannel(io, socket);
   });
 
   // WebRTC signaling relay
   socket.on('voice:offer', (data: { to: string; offer: RTCSessionDescriptionInit }) => {
-    const channelId = socket.data.voiceChannelId;
-    if (!channelId) {
-      console.log(`[VOICE] offer from ${socket.data.username} but not in a channel`);
-      return;
-    }
-
-    const room = voiceRooms.get(channelId);
-    if (!room) return;
-
-    const target = room.get(data.to);
-    if (target) {
-      console.log(`[VOICE] Relaying offer: ${socket.data.username} -> ${target.username}`);
-      io.to(target.socketId).emit('voice:offer', {
-        from: socket.data.userId,
-        offer: data.offer,
-      });
-    } else {
-      console.log(`[VOICE] offer target ${data.to.slice(0, 8)} not found in room`);
-    }
-  });
-
-  socket.on('voice:answer', (data: { to: string; answer: RTCSessionDescriptionInit }) => {
+    if (!data || typeof data.to !== 'string') return;
     const channelId = socket.data.voiceChannelId;
     if (!channelId) return;
 
@@ -75,17 +68,32 @@ export function voiceHandler(io: Server, socket: Socket) {
 
     const target = room.get(data.to);
     if (target) {
-      console.log(`[VOICE] Relaying answer: ${socket.data.username} -> ${target.username}`);
+      io.to(target.socketId).emit('voice:offer', {
+        from: socket.data.userId,
+        offer: data.offer,
+      });
+    }
+  });
+
+  socket.on('voice:answer', (data: { to: string; answer: RTCSessionDescriptionInit }) => {
+    if (!data || typeof data.to !== 'string') return;
+    const channelId = socket.data.voiceChannelId;
+    if (!channelId) return;
+
+    const room = voiceRooms.get(channelId);
+    if (!room) return;
+
+    const target = room.get(data.to);
+    if (target) {
       io.to(target.socketId).emit('voice:answer', {
         from: socket.data.userId,
         answer: data.answer,
       });
-    } else {
-      console.log(`[VOICE] answer target ${data.to.slice(0, 8)} not found in room`);
     }
   });
 
   socket.on('voice:ice-candidate', (data: { to: string; candidate: RTCIceCandidateInit }) => {
+    if (!data || typeof data.to !== 'string') return;
     const channelId = socket.data.voiceChannelId;
     if (!channelId) return;
 
@@ -102,9 +110,6 @@ export function voiceHandler(io: Server, socket: Socket) {
   });
 
   socket.on('disconnect', () => {
-    if (socket.data.voiceChannelId) {
-      console.log(`[VOICE] ${socket.data.username} disconnected while in voice channel`);
-    }
     leaveCurrentVoiceChannel(io, socket);
   });
 }
@@ -112,8 +117,6 @@ export function voiceHandler(io: Server, socket: Socket) {
 function leaveCurrentVoiceChannel(io: Server, socket: Socket) {
   const channelId = socket.data.voiceChannelId;
   if (!channelId) return;
-
-  console.log(`[VOICE] Removing ${socket.data.username} from channel ${channelId.slice(0, 8)}`);
 
   const room = voiceRooms.get(channelId);
   if (room) {
@@ -132,7 +135,6 @@ function leaveCurrentVoiceChannel(io: Server, socket: Socket) {
   });
 }
 
-// Export for use in other modules if needed
 export function getVoiceParticipants(channelId: string) {
   const room = voiceRooms.get(channelId);
   if (!room) return [];

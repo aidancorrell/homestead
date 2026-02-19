@@ -94,6 +94,8 @@ export function voiceHandler(io: Server, socket: Socket) {
 
     const target = room.get(data.to);
     if (target) {
+      const c = data.candidate as { candidate?: string };
+      console.log(`[VOICE] ICE ${socket.data.username} -> ${target.username}: ${c.candidate?.slice(0, 120) || '?'}`);
       io.to(target.socketId).emit('voice:ice-candidate', {
         from: socket.data.userId,
         candidate: data.candidate,
@@ -101,9 +103,14 @@ export function voiceHandler(io: Server, socket: Socket) {
     }
   });
 
-  socket.on('disconnect', () => {
+  // Temporary debug: client reports WebRTC state changes
+  socket.on('voice:debug', (msg: string) => {
+    console.log(`[VOICE-DEBUG] ${socket.data.username}: ${msg}`);
+  });
+
+  socket.on('disconnect', (reason) => {
     if (socket.data.voiceChannelId) {
-      console.log(`[VOICE] ${socket.data.username} disconnected while in voice channel`);
+      console.log(`[VOICE] ${socket.data.username} disconnected while in voice channel (reason: ${reason})`);
     }
     leaveCurrentVoiceChannel(io, socket);
   });

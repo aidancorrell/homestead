@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMessageStore } from '../../stores/messageStore';
 import { useChannelStore } from '../../stores/channelStore';
@@ -7,6 +7,7 @@ import { getSocket } from '../../lib/socket';
 import { MessageItem } from './MessageItem';
 import { MessageInput } from './MessageInput';
 import type { Message } from '../../types/models';
+import api from '../../lib/api';
 
 const EMPTY_MESSAGES: Message[] = [];
 
@@ -17,10 +18,13 @@ export function MessageArea() {
   const fetchMessages = useMessageStore((s) => s.fetchMessages);
   const getTypingUsers = useMessageStore((s) => s.getTypingUsers);
   const setActiveChannel = useChannelStore((s) => s.setActiveChannel);
+  const currentUserId = useAuthStore((s) => s.user?.id);
   const currentUsername = useAuthStore((s) => s.user?.username);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef(0);
+
+  const [editingMessage, setEditingMessage] = useState<Message | null>(null);
 
   const typingUsers = channelId ? getTypingUsers(channelId).filter((u) => u !== currentUsername) : [];
 
@@ -73,6 +77,15 @@ export function MessageArea() {
     return () => container.removeEventListener('scroll', onScroll);
   }, [handleLoadMore, canLoadMore]);
 
+  async function handleDelete(message: Message) {
+    if (!channelId) return;
+    try {
+      await api.delete(`/channels/${channelId}/messages/${message.id}`);
+    } catch (err) {
+      console.error('Failed to delete message:', err);
+    }
+  }
+
   if (!channelId) return null;
 
   const channelName = useChannelStore.getState().activeChannel?.name;
@@ -104,7 +117,14 @@ export function MessageArea() {
             new Date(msg.created_at).getTime() - new Date(prev.created_at).getTime() > 5 * 60 * 1000;
 
           return (
-            <MessageItem key={msg.id} message={msg} showHeader={showHeader} />
+            <MessageItem
+              key={msg.id}
+              message={msg}
+              showHeader={showHeader}
+              isOwnMessage={msg.author_id === currentUserId}
+              onEditStart={setEditingMessage}
+              onDelete={handleDelete}
+            />
           );
         })}
         <div ref={messagesEndRef} />
@@ -117,7 +137,12 @@ export function MessageArea() {
         </div>
       )}
 
-      <MessageInput channelId={channelId} />
+      <MessageInput
+        channelId={channelId}
+        editingMessage={editingMessage}
+        onEditCancel={() => setEditingMessage(null)}
+        onEditComplete={() => setEditingMessage(null)}
+      />
     </div>
   );
 }

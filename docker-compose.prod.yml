@@ -1,0 +1,90 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-homestead}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-homestead}
+      POSTGRES_DB: ${POSTGRES_DB:-homestead}
+    volumes:
+      - prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-homestead}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  server:
+    build: ./server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-homestead}:${POSTGRES_PASSWORD:-homestead}@postgres:5432/${POSTGRES_DB:-homestead}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      PORT: 3001
+      NODE_ENV: production
+      CORS_ORIGIN: ${PROD_CORS_ORIGIN:-https://${DOMAIN:-localhost}}
+      TURN_URL: ${TURN_URL:-}
+      TURN_USER: ${TURN_USER:-}
+      TURN_PASSWORD: ${TURN_PASSWORD:-}
+    networks:
+      - internal
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - certbot_certs:/etc/letsencrypt:ro
+      - certbot_webroot:/var/www/certbot:ro
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    depends_on:
+      - server
+    networks:
+      - internal
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_webroot:/var/www/certbot
+    profiles:
+      - ssl
+
+  coturn:
+    image: coturn/coturn:alpine
+    command:
+      - "-n"
+      - "--log-file=stdout"
+      - "--listening-port=3478"
+      - "--realm=homestead"
+      - "--fingerprint"
+      - "--lt-cred-mech"
+      - "--user=${TURN_USER:-homestead}:${TURN_PASSWORD:-changeme}"
+      - "--no-cli"
+      - "--no-tlsv1"
+      - "--no-tlsv1_1"
+    ports:
+      - "3478:3478"
+      - "3478:3478/udp"
+      - "49152-49200:49152-49200/udp"
+    networks:
+      - internal
+    profiles:
+      - turn
+
+volumes:
+  prod_pgdata:
+  certbot_certs:
+  certbot_webroot:
+
+networks:
+  internal:
+    driver: bridge

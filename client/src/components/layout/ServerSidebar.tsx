@@ -21,7 +21,7 @@ export function ServerSidebar() {
   }
 
   return (
-    <div className="flex w-[72px] flex-col items-center gap-2 overflow-y-auto bg-bg-darkest py-3">
+    <div className="flex w-[72px] flex-col items-center gap-2 overflow-y-auto bg-bg-darkest py-3 theme-canvas-text theme-canvas-texture">
       {servers.map((server) => (
         <Tooltip key={server.id} content={server.name} side="right">
           <button
@@ -34,7 +34,7 @@ export function ServerSidebar() {
               active={server.id === activeServerId}
             />
             {server.id === activeServerId && (
-              <div className="absolute left-0 top-1/2 h-10 w-1 -translate-x-[2px] -translate-y-1/2 rounded-r-full bg-text-primary" />
+              <div className="absolute left-0 top-1/2 h-10 w-1 -translate-x-[2px] -translate-y-1/2 rounded-r-full bg-accent" />
             )}
           </button>
         </Tooltip>
@@ -45,7 +45,7 @@ export function ServerSidebar() {
       <Tooltip content="Add a Server" side="right">
         <button
           onClick={() => setShowCreateServer(true)}
-          className="flex h-12 w-12 items-center justify-center rounded-[24px] bg-bg-medium text-success transition-all hover:rounded-[16px] hover:bg-success hover:text-white"
+          className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-server-inactive)] bg-bg-medium text-success transition-all hover:rounded-[var(--radius-server-active)] hover:bg-success hover:text-white theme-canvas-text"
         >
           <Plus size={24} />
         </button>

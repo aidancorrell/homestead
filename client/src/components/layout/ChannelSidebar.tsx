@@ -37,7 +37,7 @@ export function ChannelSidebar() {
 
   if (!activeServerId) {
     return (
-      <div className="flex w-60 flex-col bg-bg-medium">
+      <div className="flex w-60 flex-col bg-bg-medium theme-paper theme-linen">
         <div className="flex h-12 items-center border-b border-border-subtle px-4">
           <span className="text-sm font-semibold text-text-primary">Homestead</span>
         </div>
@@ -50,13 +50,13 @@ export function ChannelSidebar() {
   }
 
   return (
-    <div className="flex w-60 flex-col bg-bg-medium">
+    <div className="flex w-60 flex-col bg-bg-medium theme-paper theme-linen">
       {/* Server header */}
       <button
         onClick={() => setShowInviteModal(true)}
         className="flex h-12 items-center justify-between border-b border-border-subtle px-4 transition-colors hover:bg-bg-light"
       >
-        <span className="truncate text-sm font-semibold text-text-primary">
+        <span className="theme-heading truncate text-sm font-semibold text-text-primary font-[var(--font-heading)] tracking-[var(--heading-tracking)]">
           {activeServer?.name || 'Loading...'}
         </span>
         <ChevronDown size={16} className="text-text-secondary" />
@@ -71,7 +71,7 @@ export function ChannelSidebar() {
           <Tooltip content="Create Channel" side="top">
             <button
               onClick={() => setShowCreateChannel(true)}
-              className="rounded p-0.5 text-text-muted hover:text-text-secondary"
+              className="rounded-[var(--radius-sm)] p-0.5 text-text-muted hover:text-text-secondary"
             >
               <Plus size={16} />
             </button>
@@ -90,7 +90,7 @@ export function ChannelSidebar() {
                   </span>
                 </div>
                 {onlineMembers.map((m) => (
-                  <div key={m.user_id} className="flex items-center gap-2 rounded px-2 py-1">
+                  <div key={m.user_id} className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1">
                     <Avatar
                       src={m.avatar_url}
                       name={m.display_name || m.username}
@@ -112,7 +112,7 @@ export function ChannelSidebar() {
                   </span>
                 </div>
                 {offlineMembers.map((m) => (
-                  <div key={m.user_id} className="flex items-center gap-2 rounded px-2 py-1 opacity-50">
+                  <div key={m.user_id} className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1 opacity-50">
                     <Avatar
                       src={m.avatar_url}
                       name={m.display_name || m.username}
@@ -132,7 +132,7 @@ export function ChannelSidebar() {
 
       {/* Voice connected banner */}
       {voiceChannelId && (
-        <div className="border-t border-border-subtle bg-bg-darkest/50 px-3 py-2">
+        <div className="border-t border-border-subtle bg-bg-light px-3 py-2">
           <div className="flex items-center gap-2">
             <Signal size={16} className="text-status-online" />
             <div className="min-w-0 flex-1">
@@ -142,7 +142,7 @@ export function ChannelSidebar() {
             <Tooltip content="Disconnect" side="top">
               <button
                 onClick={leaveVoiceChannel}
-                className="rounded p-1.5 text-text-muted transition-colors hover:bg-bg-light hover:text-danger"
+                className="rounded-[var(--radius-sm)] p-1.5 text-text-muted transition-colors hover:bg-bg-lighter hover:text-danger"
               >
                 <PhoneOff size={16} />
               </button>

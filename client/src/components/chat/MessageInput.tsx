@@ -87,9 +87,9 @@ export function MessageInput({ channelId, editingMessage, onEditCancel, onEditCo
   }
 
   return (
-    <div className="px-4 pb-4">
+    <div className="theme-canvas-text px-4 pb-4">
       {isEditing && (
-        <div className="mb-1 flex items-center gap-2 rounded-t-lg bg-accent/10 px-3 py-1.5 text-xs text-accent">
+        <div className="mb-1 flex items-center gap-2 rounded-t-[var(--radius-md)] bg-accent/10 px-3 py-1.5 text-xs text-accent">
           <span>Editing message</span>
           <span className="text-text-muted">— press Escape to cancel</span>
           <button onClick={handleCancel} className="ml-auto text-text-muted hover:text-text-primary">
@@ -97,7 +97,7 @@ export function MessageInput({ channelId, editingMessage, onEditCancel, onEditCo
           </button>
         </div>
       )}
-      <div className={`flex items-end gap-2 bg-bg-light px-4 py-2 ${isEditing ? 'rounded-b-lg' : 'rounded-lg'}`}>
+      <div className={`theme-glow-border flex items-end gap-2 bg-bg-light px-4 py-2 ${isEditing ? 'rounded-b-[var(--radius-md)]' : 'rounded-[var(--radius-md)]'}`}>
         <textarea
           ref={textareaRef}
           value={content}
@@ -113,7 +113,7 @@ export function MessageInput({ channelId, editingMessage, onEditCancel, onEditCo
         <button
           onClick={handleSend}
           disabled={!content.trim()}
-          className="rounded p-1 text-text-muted transition-colors hover:text-accent disabled:opacity-30"
+          className="rounded-[var(--radius-sm)] p-1 text-text-muted transition-colors hover:text-accent disabled:opacity-30"
         >
           <Send size={18} />
         </button>

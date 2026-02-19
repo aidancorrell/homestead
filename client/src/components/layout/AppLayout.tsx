@@ -21,7 +21,7 @@ export function AppLayout() {
     <div className="flex h-screen">
       <ServerSidebar />
       <ChannelSidebar />
-      <div className="flex flex-1 flex-col bg-bg-dark">
+      <div className="flex flex-1 flex-col bg-bg-dark theme-canvas-text theme-canvas-texture">
         <Routes>
           <Route
             path=":serverId/:channelId"
@@ -30,9 +30,9 @@ export function AppLayout() {
           <Route
             path="*"
             element={
-              <div className="flex flex-1 items-center justify-center text-text-muted">
+              <div className="flex flex-1 items-center justify-center theme-canvas-text-muted">
                 <div className="text-center">
-                  <h2 className="mb-2 text-2xl font-bold text-text-secondary">Welcome to Homestead</h2>
+                  <h2 className="theme-heading mb-2 text-2xl font-bold theme-canvas-text-secondary font-[var(--font-heading)] tracking-[var(--heading-tracking)]">Welcome to Homestead</h2>
                   <p>Select a server and channel to start chatting</p>
                 </div>
               </div>

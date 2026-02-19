@@ -27,7 +27,7 @@ export function Tooltip({ content, children, side = 'right' }: TooltipProps) {
       {show && (
         <div
           className={cn(
-            'pointer-events-none absolute z-50 whitespace-nowrap rounded-md bg-bg-darkest px-3 py-1.5 text-sm font-medium text-text-primary shadow-lg',
+            'pointer-events-none absolute z-50 whitespace-nowrap rounded-[var(--radius-sm)] bg-bg-darkest px-3 py-1.5 text-sm font-medium text-text-primary shadow-[var(--shadow-card)]',
             positionClass[side],
           )}
           role="tooltip"

@@ -34,7 +34,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     >
       <div
         className={cn(
-          'w-full max-w-md rounded-lg bg-bg-medium p-6 shadow-xl',
+          'theme-clip-panel theme-glow-border theme-paper theme-linen w-full max-w-md rounded-[var(--radius-md)] bg-bg-medium p-6 shadow-[var(--shadow-popup)]',
           className,
         )}
         role="dialog"
@@ -42,10 +42,10 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
         aria-label={title}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
+          <h2 className="theme-heading font-[var(--font-heading)] tracking-[var(--heading-tracking)] text-lg font-semibold text-text-primary">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded p-1 text-text-muted hover:bg-bg-light hover:text-text-primary"
+            className="rounded-[var(--radius-sm)] p-1 text-text-muted hover:bg-bg-light hover:text-text-primary"
             aria-label="Close"
           >
             <X size={18} />

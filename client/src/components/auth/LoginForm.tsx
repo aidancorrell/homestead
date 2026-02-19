@@ -28,9 +28,9 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-bg-darkest">
-      <div className="w-full max-w-sm rounded-lg bg-bg-medium p-8 shadow-xl">
-        <h1 className="mb-2 text-center text-2xl font-bold text-text-primary">Welcome back!</h1>
+    <div className="flex h-screen items-center justify-center bg-bg-darkest theme-canvas-texture">
+      <div className="theme-clip-panel theme-glow-border theme-paper theme-linen w-full max-w-sm rounded-[var(--radius-md)] bg-bg-medium p-8 shadow-[var(--shadow-popup)]">
+        <h1 className="theme-heading mb-2 text-center text-2xl font-bold text-text-primary font-[var(--font-heading)] tracking-[var(--heading-tracking)]">Welcome back!</h1>
         <p className="mb-6 text-center text-sm text-text-secondary">Log in to Homestead</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

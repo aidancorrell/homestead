@@ -38,54 +38,83 @@
   /* Fonts */
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Inter', sans-serif;
+  --heading-tracking: 0em;
+
+  /* Shape */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-server-active: 16px;
+  --radius-server-inactive: 24px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-popup: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+  /* Scrollbar */
+  --scrollbar-width: 8px;
+  --scrollbar-thumb-radius: 4px;
 }
 
 /* ── Cyberpunk theme ── */
 [data-theme="cyberpunk"] {
-  --color-bg-darkest: #0a0a12;
-  --color-bg-dark: #0f0f1e;
-  --color-bg-medium: #161628;
-  --color-bg-light: #1e1e36;
-  --color-bg-lighter: #2a2a48;
+  --color-bg-darkest: #05050d;
+  --color-bg-dark: #0a0a18;
+  --color-bg-medium: #0d1020;
+  --color-bg-light: #141830;
+  --color-bg-lighter: #1c2040;
 
-  --color-text-primary: #e0f0ff;
-  --color-text-secondary: #8cb4d8;
-  --color-text-muted: #4a6a8a;
+  --color-text-primary: #d0e8ff;
+  --color-text-secondary: #7ab0d4;
+  --color-text-muted: #3a6080;
 
-  --color-accent: #ff2a6d;
-  --color-accent-hover: #ff5590;
-  --color-accent-muted: #b81e4e;
+  --color-accent: #00f7ff;
+  --color-accent-hover: #33f9ff;
+  --color-accent-muted: #007a80;
 
-  --color-border-subtle: #1a1a3a;
-  --color-border-default: #2a2a50;
+  --color-border-subtle: rgba(0, 247, 255, 0.12);
+  --color-border-default: rgba(0, 247, 255, 0.3);
 
-  --color-danger: #ff3355;
-  --color-danger-hover: #ff5577;
+  --color-danger: #ff2a6d;
+  --color-danger-hover: #ff5590;
 
   --color-success: #00e68a;
 
   --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'Fira Code', monospace;
+  --font-heading: 'Share Tech Mono', monospace;
+  --heading-tracking: 0.1em;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-server-active: 4px;
+  --radius-server-inactive: 8px;
+
+  --shadow-card: 0 0 8px rgba(0, 247, 255, 0.15), inset 0 0 8px rgba(0, 247, 255, 0.04);
+  --shadow-popup: 0 0 24px rgba(0, 247, 255, 0.2), inset 0 0 12px rgba(0, 247, 255, 0.06);
+
+  --scrollbar-width: 6px;
+  --scrollbar-thumb-radius: 0px;
 }
 
 /* ── Japandi theme ── */
 [data-theme="japandi"] {
-  --color-bg-darkest: #161412;
-  --color-bg-dark: #1e1b18;
-  --color-bg-medium: #272320;
-  --color-bg-light: #322e28;
-  --color-bg-lighter: #3e3832;
+  --color-bg-darkest: #121110;
+  --color-bg-dark: #1a1816;
+  --color-bg-medium: #f5f0e8;
+  --color-bg-light: #ede7db;
+  --color-bg-lighter: #e5ddd0;
 
-  --color-text-primary: #e8e0d6;
-  --color-text-secondary: #b0a698;
-  --color-text-muted: #706860;
+  --color-text-primary: #2a2420;
+  --color-text-secondary: #6b6058;
+  --color-text-muted: #9a8e82;
 
   --color-accent: #7a9a6e;
   --color-accent-hover: #92b484;
   --color-accent-muted: #5a7a4e;
 
-  --color-border-subtle: #2a2622;
-  --color-border-default: #3a3530;
+  --color-border-subtle: #d4ccc0;
+  --color-border-default: #c4bab0;
 
   --color-danger: #c45e5e;
   --color-danger-hover: #d87a7a;
@@ -94,6 +123,19 @@
 
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Noto Serif', serif;
+  --heading-tracking: 0.02em;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-server-active: 20px;
+  --radius-server-inactive: 28px;
+
+  --shadow-card: none;
+  --shadow-popup: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+  --scrollbar-width: 4px;
+  --scrollbar-thumb-radius: 9999px;
 }
 
 * {
@@ -118,7 +160,7 @@ body {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {
@@ -127,9 +169,147 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-bg-lighter);
-  border-radius: 4px;
+  border-radius: var(--scrollbar-thumb-radius);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
+}
+
+/* ── Cyberpunk: scanline overlay ── */
+[data-theme="cyberpunk"] #root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 247, 255, 0.02) 2px,
+    rgba(0, 247, 255, 0.02) 4px
+  );
+}
+
+/* ── Cyberpunk: heading glow + uppercase ── */
+[data-theme="cyberpunk"] .theme-heading {
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(0, 247, 255, 0.5);
+}
+
+/* ── Cyberpunk: clip-path shapes ── */
+[data-theme="cyberpunk"] .theme-clip-panel {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+[data-theme="cyberpunk"] .theme-clip-button {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+[data-theme="cyberpunk"] .theme-clip-input {
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+}
+
+/* ── Cyberpunk: glow border for panels ── */
+[data-theme="cyberpunk"] .theme-glow-border {
+  border: 1px solid rgba(0, 247, 255, 0.3);
+  box-shadow: 0 0 12px rgba(0, 247, 255, 0.1), inset 0 0 12px rgba(0, 247, 255, 0.04);
+}
+
+/* ── Cyberpunk: neon accent glow on focus ── */
+[data-theme="cyberpunk"] input:focus,
+[data-theme="cyberpunk"] textarea:focus {
+  box-shadow: 0 0 8px rgba(0, 247, 255, 0.3);
+}
+
+/* ── Japandi: paper grain noise on light surfaces ── */
+[data-theme="japandi"] .theme-paper {
+  border: 1px solid var(--color-border-default);
+  position: relative;
+}
+[data-theme="japandi"] .theme-paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+[data-theme="japandi"] .theme-paper > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Japandi: dark canvas washi fiber texture ── */
+[data-theme="japandi"] .theme-canvas-texture {
+  position: relative;
+}
+[data-theme="japandi"] .theme-canvas-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+[data-theme="japandi"] .theme-canvas-texture > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Japandi: linen weave pattern on paper surfaces ── */
+[data-theme="japandi"] .theme-linen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(120, 100, 80, 0.3) 3px,
+      rgba(120, 100, 80, 0.3) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(120, 100, 80, 0.2) 3px,
+      rgba(120, 100, 80, 0.2) 4px
+    );
+  border-radius: inherit;
+}
+
+/* ── Japandi: dark canvas text (for elements on dark bg) ── */
+[data-theme="japandi"] .theme-canvas-text,
+[data-theme="japandi"] .theme-canvas-text *:not(.text-text-primary):not(.text-accent):not(.text-danger):not(.text-status-online) {
+  color: #e8e0d6;
+}
+
+[data-theme="japandi"] .theme-canvas-text-secondary {
+  color: #b0a698;
+}
+
+[data-theme="japandi"] .theme-canvas-text-muted {
+  color: #706860;
+}
+
+[data-theme="japandi"] .theme-canvas-text input::placeholder,
+[data-theme="japandi"] .theme-canvas-text textarea::placeholder {
+  color: #706860;
+}
+
+/* ── Japandi: input on dark bg needs light text ── */
+[data-theme="japandi"] .theme-canvas-text input,
+[data-theme="japandi"] .theme-canvas-text textarea {
+  color: #e8e0d6;
 }

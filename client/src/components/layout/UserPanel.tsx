@@ -16,7 +16,7 @@ export function UserPanel() {
   if (!user) return null;
 
   return (
-    <div className="flex items-center gap-2 border-t border-border-subtle bg-bg-darkest/50 p-2">
+    <div className="flex items-center gap-2 border-t border-border-subtle bg-bg-light p-2">
       <Avatar name={user.display_name} src={user.avatar_url} size="sm" status={user.status} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-text-primary">{user.display_name}</p>

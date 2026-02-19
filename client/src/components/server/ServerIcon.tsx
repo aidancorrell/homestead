@@ -16,14 +16,19 @@ function getInitials(name: string) {
 }
 
 export function ServerIcon({ name, iconUrl, active }: ServerIconProps) {
-  const base = 'flex h-12 w-12 items-center justify-center transition-all overflow-hidden';
+  const base = 'flex h-12 w-12 items-center justify-center transition-all overflow-hidden border border-transparent';
 
   if (iconUrl) {
     return (
       <img
         src={iconUrl}
         alt={name}
-        className={cn(base, active ? 'rounded-[16px]' : 'rounded-[24px] hover:rounded-[16px]')}
+        className={cn(
+          base,
+          active
+            ? 'rounded-[var(--radius-server-active)] border-accent'
+            : 'rounded-[var(--radius-server-inactive)] hover:rounded-[var(--radius-server-active)] hover:border-accent',
+        )}
       />
     );
   }
@@ -32,10 +37,10 @@ export function ServerIcon({ name, iconUrl, active }: ServerIconProps) {
     <div
       className={cn(
         base,
-        'bg-bg-medium text-sm font-semibold text-text-primary',
+        'bg-bg-medium text-sm font-semibold theme-canvas-text',
         active
-          ? 'rounded-[16px] bg-accent text-white'
-          : 'rounded-[24px] hover:rounded-[16px] hover:bg-accent hover:text-white',
+          ? 'rounded-[var(--radius-server-active)] border-accent bg-accent text-white'
+          : 'rounded-[var(--radius-server-inactive)] hover:rounded-[var(--radius-server-active)] hover:border-accent hover:bg-accent hover:text-white',
       )}
     >
       {getInitials(name)}

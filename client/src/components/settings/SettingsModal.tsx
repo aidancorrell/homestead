@@ -49,7 +49,7 @@ export function SettingsModal() {
         {/* Profile section */}
         <div>
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Profile</h3>
-          <div className="flex items-center gap-4 rounded-lg bg-bg-darkest p-4">
+          <div className="flex items-center gap-4 rounded-[var(--radius-md)] bg-bg-darkest p-4">
             <Avatar name={user.display_name} src={user.avatar_url} size="lg" status={user.status} />
             <div>
               <p className="font-semibold text-text-primary">{user.display_name}</p>

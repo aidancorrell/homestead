@@ -41,7 +41,7 @@ export function ChannelItem({ channel, active }: ChannelItemProps) {
       <button
         onClick={handleClick}
         className={cn(
-          'flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left transition-colors',
+          'flex w-full items-center gap-1.5 rounded-[var(--radius-sm)] px-2 py-1.5 text-left transition-colors',
           active
             ? 'bg-bg-light text-text-primary'
             : 'text-text-secondary hover:bg-bg-light/50 hover:text-text-primary',

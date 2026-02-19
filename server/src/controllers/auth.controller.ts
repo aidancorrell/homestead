@@ -47,7 +47,21 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export function logout(_req: Request, res: Response) {
-  res.clearCookie('refreshToken', { path: '/api/auth' });
-  res.json({ message: 'Logged out' });
+export async function logout(req: Request, res: Response, next: NextFunction) {
+  try {
+    // Invalidate refresh tokens server-side if we have a valid access token
+    const header = req.headers.authorization;
+    if (header?.startsWith('Bearer ')) {
+      try {
+        const payload = authService.verifyAccessToken(header.slice(7));
+        await authService.logout(payload.userId);
+      } catch {
+        // Token invalid/expired — still clear cookie
+      }
+    }
+    res.clearCookie('refreshToken', { path: '/api/auth' });
+    res.json({ message: 'Logged out' });
+  } catch (err) {
+    next(err);
+  }
 }

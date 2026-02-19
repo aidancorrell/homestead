@@ -25,7 +25,6 @@ export interface ClientToServerEvents {
   'voice:offer': (data: { to: string; offer: RTCSessionDescriptionInit }) => void;
   'voice:answer': (data: { to: string; answer: RTCSessionDescriptionInit }) => void;
   'voice:ice-candidate': (data: { to: string; candidate: RTCIceCandidateInit }) => void;
-  'voice:debug': (msg: string) => void;
 }
 
 export interface VoiceParticipant {

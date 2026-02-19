@@ -53,7 +53,7 @@ export function SettingsModal() {
             <div>
               <p className="font-semibold text-text-primary">{user.display_name}</p>
               <p className="text-sm text-text-muted">#{user.username}</p>
-              <p className="text-xs text-text-muted">{user.email}</p>
+
             </div>
           </div>
         </div>

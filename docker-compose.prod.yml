@@ -60,6 +60,7 @@ services:
 
   coturn:
     image: coturn/coturn:alpine
+    network_mode: host
     command:
       - "-n"
       - "--log-file=stdout"
@@ -71,12 +72,10 @@ services:
       - "--no-cli"
       - "--no-tlsv1"
       - "--no-tlsv1_1"
-    ports:
-      - "3478:3478"
-      - "3478:3478/udp"
-      - "49152-49200:49152-49200/udp"
-    networks:
-      - internal
+      - "--external-ip=${EXTERNAL_IP}"
+      - "--relay-ip=${EXTERNAL_IP}"
+      - "--min-port=49152"
+      - "--max-port=49200"
     profiles:
       - turn
 

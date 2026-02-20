@@ -34,7 +34,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     >
       <div
         className={cn(
-          'theme-clip-panel theme-glow-border theme-paper theme-linen w-full max-w-md rounded-[var(--radius-md)] bg-bg-medium p-6 shadow-[var(--shadow-popup)]',
+          'theme-clip-panel theme-glow-border theme-ink-wash w-full max-w-md rounded-[var(--radius-md)] bg-bg-medium p-6 shadow-[var(--shadow-popup)]',
           className,
         )}
         role="dialog"

@@ -142,19 +142,24 @@ export async function joinVoiceChannel(channelId: string) {
 function leaveVoiceChannelInternal() {
   setOnReconnect(null);
 
-  const socket = getSocket();
-  if (useVoiceStore.getState().channelId) {
-    socket?.emit('voice:leave');
+  try {
+    const socket = getSocket();
+    if (useVoiceStore.getState().channelId) {
+      socket?.emit('voice:leave');
+    }
+
+    closeAllConnections();
+    destroyAudioEngine();
+
+    if (localStream) {
+      localStream.getTracks().forEach((t) => t.stop());
+      localStream = null;
+    }
+  } catch (err) {
+    console.error('[Voice] Error during leave cleanup:', err);
   }
 
-  closeAllConnections();
-  destroyAudioEngine();
-
-  if (localStream) {
-    localStream.getTracks().forEach((t) => t.stop());
-    localStream = null;
-  }
-
+  // Always clear channel state, even if cleanup above threw
   useVoiceStore.getState().setChannel(null);
 }
 

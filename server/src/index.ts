@@ -43,7 +43,7 @@ async function start() {
     // Run migrations
     await db.migrate.latest({
       directory: new URL('./db/migrations', import.meta.url).pathname,
-      loadExtensions: ['.js'],
+      loadExtensions: [env.NODE_ENV === 'production' ? '.js' : '.ts'],
     });
     console.log('Migrations complete');
 

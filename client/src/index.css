@@ -97,45 +97,45 @@
   --scrollbar-thumb-radius: 0px;
 }
 
-/* ── Japandi theme ── */
-[data-theme="japandi"] {
-  --color-bg-darkest: #121110;
-  --color-bg-dark: #1a1816;
-  --color-bg-medium: #f5f0e8;
-  --color-bg-light: #ede7db;
-  --color-bg-lighter: #e5ddd0;
+/* ── Tsushima theme ── */
+[data-theme="tsushima"] {
+  --color-bg-darkest: #0a0a0a;
+  --color-bg-dark: #121210;
+  --color-bg-medium: #1c1b18;
+  --color-bg-light: #2a2824;
+  --color-bg-lighter: #3a3630;
 
-  --color-text-primary: #2a2420;
-  --color-text-secondary: #6b6058;
-  --color-text-muted: #9a8e82;
+  --color-text-primary: #e8e4dc;
+  --color-text-secondary: #a09888;
+  --color-text-muted: #605848;
 
-  --color-accent: #7a9a6e;
-  --color-accent-hover: #92b484;
-  --color-accent-muted: #5a7a4e;
+  --color-accent: #c23030;
+  --color-accent-hover: #d84040;
+  --color-accent-muted: #8a2020;
 
-  --color-border-subtle: #d4ccc0;
-  --color-border-default: #c4bab0;
+  --color-border-subtle: #2a2622;
+  --color-border-default: #3a3530;
 
   --color-danger: #c45e5e;
   --color-danger-hover: #d87a7a;
 
-  --color-success: #7a9a6e;
+  --color-success: #6a8a50;
 
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-heading: 'Noto Serif', serif;
-  --heading-tracking: 0.02em;
+  --font-heading: 'Noto Serif JP', serif;
+  --heading-tracking: 0.08em;
 
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-server-active: 20px;
-  --radius-server-inactive: 28px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-server-active: 8px;
+  --radius-server-inactive: 12px;
 
-  --shadow-card: none;
-  --shadow-popup: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.6);
+  --shadow-popup: 0 8px 32px rgba(0, 0, 0, 0.8);
 
   --scrollbar-width: 4px;
-  --scrollbar-thumb-radius: 9999px;
+  --scrollbar-thumb-radius: 2px;
 }
 
 * {
@@ -223,93 +223,43 @@ body {
   box-shadow: 0 0 8px rgba(0, 247, 255, 0.3);
 }
 
-/* ── Japandi: paper grain noise on light surfaces ── */
-[data-theme="japandi"] .theme-paper {
-  border: 1px solid var(--color-border-default);
+/* ── Tsushima: ink wash overlay ── */
+[data-theme="tsushima"] .theme-ink-wash {
   position: relative;
 }
-[data-theme="japandi"] .theme-paper::before {
+[data-theme="tsushima"] .theme-ink-wash::before {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.4;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
-  border-radius: inherit;
-}
-[data-theme="japandi"] .theme-paper > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Japandi: dark canvas washi fiber texture ── */
-[data-theme="japandi"] .theme-canvas-texture {
-  position: relative;
-}
-[data-theme="japandi"] .theme-canvas-texture::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.35;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23f)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='ink'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23ink)' opacity='0.6'/%3E%3C/svg%3E");
   mix-blend-mode: soft-light;
+  border-radius: inherit;
 }
-[data-theme="japandi"] .theme-canvas-texture > * {
+[data-theme="tsushima"] .theme-ink-wash > * {
   position: relative;
   z-index: 1;
 }
 
-/* ── Japandi: linen weave pattern on paper surfaces ── */
-[data-theme="japandi"] .theme-linen::after {
+/* ── Tsushima: cinematic vignette ── */
+[data-theme="tsushima"] #root::after {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
-  opacity: 0.08;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(120, 100, 80, 0.3) 3px,
-      rgba(120, 100, 80, 0.3) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 3px,
-      rgba(120, 100, 80, 0.2) 3px,
-      rgba(120, 100, 80, 0.2) 4px
-    );
-  border-radius: inherit;
+  z-index: 9999;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
 }
 
-/* ── Japandi: dark canvas text (for elements on dark bg) ── */
-[data-theme="japandi"] .theme-canvas-text,
-[data-theme="japandi"] .theme-canvas-text *:not(.text-text-primary):not(.text-accent):not(.text-danger):not(.text-status-online) {
-  color: #e8e0d6;
+/* ── Tsushima: accent border (crimson left border on panels) ── */
+[data-theme="tsushima"] .theme-accent-border {
+  border-left: 2px solid var(--color-accent);
 }
 
-[data-theme="japandi"] .theme-canvas-text-secondary {
-  color: #b0a698;
-}
-
-[data-theme="japandi"] .theme-canvas-text-muted {
-  color: #706860;
-}
-
-[data-theme="japandi"] .theme-canvas-text input::placeholder,
-[data-theme="japandi"] .theme-canvas-text textarea::placeholder {
-  color: #706860;
-}
-
-/* ── Japandi: input on dark bg needs light text ── */
-[data-theme="japandi"] .theme-canvas-text input,
-[data-theme="japandi"] .theme-canvas-text textarea {
-  color: #e8e0d6;
+/* ── Tsushima: heading style — uppercase, wide-tracked, no glow ── */
+[data-theme="tsushima"] .theme-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }

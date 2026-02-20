@@ -29,8 +29,8 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-bg-darkest theme-canvas-texture">
-      <div className="theme-clip-panel theme-glow-border theme-paper theme-linen w-full max-w-sm rounded-[var(--radius-md)] bg-bg-medium p-8 shadow-[var(--shadow-popup)]">
+    <div className="flex h-screen items-center justify-center bg-bg-darkest theme-ink-wash">
+      <div className="theme-clip-panel theme-glow-border theme-ink-wash w-full max-w-sm rounded-[var(--radius-md)] bg-bg-medium p-8 shadow-[var(--shadow-popup)]">
         <h1 className="theme-heading mb-2 text-center text-2xl font-bold text-text-primary font-[var(--font-heading)] tracking-[var(--heading-tracking)]">Create an account</h1>
         <p className="mb-6 text-center text-sm text-text-secondary">Join your friends on Homestead</p>
 

@@ -60,7 +60,7 @@ export function MessageItem({ message, showHeader, isOwnMessage, onEditStart, on
 
   if (showHeader) {
     return (
-      <div className="theme-canvas-text group relative mt-4 flex gap-3 rounded-[var(--radius-sm)] px-1 py-0.5 first:mt-0 hover:bg-bg-dark/30">
+      <div className="group relative mt-4 flex gap-3 rounded-[var(--radius-sm)] px-1 py-0.5 first:mt-0 hover:bg-bg-dark/30">
         <Avatar
           name={author?.display_name || author?.username || 'Unknown'}
           src={author?.avatar_url}
@@ -84,7 +84,7 @@ export function MessageItem({ message, showHeader, isOwnMessage, onEditStart, on
   }
 
   return (
-    <div className="theme-canvas-text group relative flex gap-3 rounded-[var(--radius-sm)] px-1 py-0.5 hover:bg-bg-dark/30">
+    <div className="group relative flex gap-3 rounded-[var(--radius-sm)] px-1 py-0.5 hover:bg-bg-dark/30">
       <div className="w-10 shrink-0" />
       <div className="min-w-0 flex-1 text-sm text-text-secondary">
         <MarkdownRenderer content={message.content} />

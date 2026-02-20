@@ -37,7 +37,7 @@ export function ChannelSidebar() {
 
   if (!activeServerId) {
     return (
-      <div className="flex w-60 flex-col bg-bg-medium theme-paper theme-linen">
+      <div className="flex w-60 flex-col bg-bg-medium theme-ink-wash theme-accent-border">
         <div className="flex h-12 items-center border-b border-border-subtle px-4">
           <span className="text-sm font-semibold text-text-primary">Homestead</span>
         </div>
@@ -50,7 +50,7 @@ export function ChannelSidebar() {
   }
 
   return (
-    <div className="flex w-60 flex-col bg-bg-medium theme-paper theme-linen">
+    <div className="flex w-60 flex-col bg-bg-medium theme-ink-wash theme-accent-border">
       {/* Server header */}
       <button
         onClick={() => setShowInviteModal(true)}

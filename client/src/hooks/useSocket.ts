@@ -68,6 +68,11 @@ export function useSocket() {
 
     socket.on('voice:user-left', ({ userId }) => {
       useVoiceStore.getState().removeParticipant(userId);
+      // Defensive cleanup: if it's the current user, clear voice channel state
+      const currentUserId = useAuthStore.getState().user?.id;
+      if (userId === currentUserId) {
+        useVoiceStore.getState().setChannel(null);
+      }
     });
 
     // Set up voice signaling listeners (once)

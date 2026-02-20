@@ -37,7 +37,7 @@ export function ServerIcon({ name, iconUrl, active }: ServerIconProps) {
     <div
       className={cn(
         base,
-        'bg-bg-medium text-sm font-semibold theme-canvas-text',
+        'bg-bg-medium text-sm font-semibold',
         active
           ? 'rounded-[var(--radius-server-active)] border-accent bg-accent text-white'
           : 'rounded-[var(--radius-server-inactive)] hover:rounded-[var(--radius-server-active)] hover:border-accent hover:bg-accent hover:text-white',

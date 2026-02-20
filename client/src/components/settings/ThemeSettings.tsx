@@ -33,13 +33,13 @@ const themes: {
     scanlines: true,
   },
   {
-    id: 'japandi',
-    label: 'Japandi',
-    description: 'Paper & canvas, wabi-sabi',
-    colors: { bg: '#1a1816', sidebar: '#121110', panel: '#f5f0e8', accent: '#7a9a6e', text: '#2a2420', muted: '#9a8e82', border: '#c4bab0' },
-    radius: '16px',
-    shadow: 'none',
-    headingFont: 'Noto Serif, serif',
+    id: 'tsushima',
+    label: 'Tsushima',
+    description: 'Ink & crimson, atmospheric',
+    colors: { bg: '#121210', sidebar: '#0a0a0a', panel: '#1c1b18', accent: '#c23030', text: '#e8e4dc', muted: '#605848', border: '#3a3530' },
+    radius: '4px',
+    shadow: '0 2px 8px rgba(0,0,0,0.6)',
+    headingFont: 'Noto Serif JP, serif',
   },
 ];
 
@@ -91,13 +91,13 @@ export function ThemeSettings() {
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1">
                     <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: t.colors.accent, opacity: 0.6 }} />
-                    <div className="h-1 w-8" style={{ backgroundColor: t.id === 'japandi' ? '#e8e0d6' : t.colors.text, opacity: 0.6 }} />
+                    <div className="h-1 w-8" style={{ backgroundColor: t.colors.text, opacity: 0.6 }} />
                   </div>
-                  <div className="h-1 w-full opacity-30" style={{ backgroundColor: t.id === 'japandi' ? '#b0a698' : t.colors.muted }} />
-                  <div className="h-1 w-3/4 opacity-20" style={{ backgroundColor: t.id === 'japandi' ? '#b0a698' : t.colors.muted }} />
+                  <div className="h-1 w-full opacity-30" style={{ backgroundColor: t.colors.muted }} />
+                  <div className="h-1 w-3/4 opacity-20" style={{ backgroundColor: t.colors.muted }} />
                 </div>
                 {/* Input bar */}
-                <div className="mt-1 h-2.5 w-full" style={{ backgroundColor: t.id === 'japandi' ? '#272320' : t.colors.panel, borderRadius: t.radius, border: `1px solid ${t.colors.border}` }} />
+                <div className="mt-1 h-2.5 w-full" style={{ backgroundColor: t.colors.panel, borderRadius: t.radius, border: `1px solid ${t.colors.border}` }} />
               </div>
               {/* Scanlines overlay for cyberpunk */}
               {t.scanlines && (

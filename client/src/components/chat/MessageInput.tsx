@@ -87,7 +87,7 @@ export function MessageInput({ channelId, editingMessage, onEditCancel, onEditCo
   }
 
   return (
-    <div className="theme-canvas-text px-4 pb-4">
+    <div className="px-4 pb-4">
       {isEditing && (
         <div className="mb-1 flex items-center gap-2 rounded-t-[var(--radius-md)] bg-accent/10 px-3 py-1.5 text-xs text-accent">
           <span>Editing message</span>

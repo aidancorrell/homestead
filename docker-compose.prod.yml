@@ -61,21 +61,19 @@ services:
   coturn:
     image: coturn/coturn:alpine
     network_mode: host
-    command:
-      - "-n"
-      - "--log-file=stdout"
-      - "--listening-port=3478"
-      - "--realm=homestead"
-      - "--fingerprint"
-      - "--lt-cred-mech"
-      - "--user=${TURN_USER:-homestead}:${TURN_PASSWORD:-changeme}"
-      - "--no-cli"
-      - "--no-tlsv1"
-      - "--no-tlsv1_1"
-      - "--external-ip=${EXTERNAL_IP}"
-      - "--relay-ip=${EXTERNAL_IP}"
-      - "--min-port=49152"
-      - "--max-port=49200"
+    command: >
+      -n
+      --log-file=stdout
+      --listening-port=3478
+      --realm=homestead
+      --fingerprint
+      --lt-cred-mech
+      --user=${TURN_USER:-homestead}:${TURN_PASSWORD:-changeme}
+      --no-cli
+      --external-ip=${EXTERNAL_IP}
+      --relay-ip=${EXTERNAL_IP}
+      --min-port=49152
+      --max-port=49200
     profiles:
       - turn
 
